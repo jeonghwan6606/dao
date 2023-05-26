@@ -2,7 +2,6 @@
     pageEncoding="UTF-8"%>
 <%@ page import = "dao.SubjectDao" %>  
 <%@ page import = "vo.Subject" %>    
-
 <% 
 	SubjectDao sd = new SubjectDao();
 
@@ -10,13 +9,13 @@
 	int subjectNo = Integer.parseInt(request.getParameter("subjectNo"));
 	Subject subject = sd.selectSubjectOne(subjectNo);
 
-
-
 %>   
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <title>Insert title here</title>
 </head>
 <body>

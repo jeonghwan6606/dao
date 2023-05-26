@@ -40,7 +40,7 @@ public class SubjectDao {
 		DBUtil dbUtil = new DBUtil();
 		Connection conn = dbUtil.getConnection();
 		//insert 쿼리
-		String insertSql = "Insert INTO subject(subject_name, subject_time,createdate,updatedate) Values(?,?,now(),now()";
+		String insertSql = "Insert INTO subject(subject_name, subject_time,createdate,updatedate) Values(?,?,now(),now())";
 		PreparedStatement insertSubjectStmt = conn.prepareStatement(insertSql);
 		insertSubjectStmt.setString(1,subject.getSubjectName()); 	
 		insertSubjectStmt.setInt(2,subject.getSubjectTime()); 	
@@ -79,10 +79,11 @@ public class SubjectDao {
 			DBUtil dbUtil = new DBUtil();
 			Connection conn = dbUtil.getConnection(); 
 			//Update 쿼리
-			String updateSubjectSql = "UPDATE subject SET subject_name =?, subject_time=?, updatedate=now()";
+			String updateSubjectSql = "UPDATE subject SET subject_name =?, subject_time=?, updatedate=now() Where subject_no= ? ";
 			PreparedStatement updateSubjectStmt = conn.prepareStatement(updateSubjectSql); 
 			updateSubjectStmt.setString(1,subject.getSubjectName()); 	
 			updateSubjectStmt.setInt(2,subject.getSubjectTime());
+			updateSubjectStmt.setInt(3,subject.getSubjectNo());
 			// Row 
 			updateSubjectRow = updateSubjectStmt.executeUpdate();
 			if(updateSubjectRow==1) {
@@ -102,7 +103,7 @@ public class SubjectDao {
 		DBUtil dbUtil = new DBUtil();
 		Connection conn = dbUtil.getConnection(); 
 		// PreparedStatement
-		String subjectOneSql = "SELECT subject_name, subject_time, createdate,updatedate from subject where subject_no= ?";
+		String subjectOneSql = "SELECT subject_no, subject_name, subject_time, createdate,updatedate from subject where subject_no= ?";
 		PreparedStatement subjectOneStmt = conn.prepareStatement(subjectOneSql); 
 		subjectOneStmt.setInt(1,subjectNo); 	
 		
@@ -111,6 +112,7 @@ public class SubjectDao {
 		
 		if(subjectOneRs.next()) {
 			subject = new Subject();
+			subject.setSubjectNo(subjectOneRs.getInt("subject_no"));
 			subject.setSubjectName(subjectOneRs.getString("subject_name"));
 			subject.setSubjectTime(subjectOneRs.getInt("subject_time"));
 			subject.setCreatedate(subjectOneRs.getString("createdate"));
@@ -131,10 +133,10 @@ public class SubjectDao {
 				PreparedStatement subjectCntStmt = conn.prepareStatement(subjectCntSql); 					
 				
 				// ResultSet
-				ResultSet subjectOneRs = subjectCntStmt.executeQuery();
+				ResultSet subjectCntRs = subjectCntStmt.executeQuery();
 				
-				if(subjectOneRs.next()){
-					totalRow = subjectOneRs.getInt(1); //행이 하나일때 index 1사용
+				if(subjectCntRs.next()){
+					totalRow = subjectCntRs.getInt(1); //행이 하나일때 index 1사용
 				}
 		
 		return totalRow; 

@@ -1,18 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import = "dao.SubjectDao" %>  
-<%@ page import = "vo.Subject" %>   
+<%@ page import = "dao.TeacherDao" %>  
+<%@ page import = "java.util.*" %>
 <%
-	SubjectDao sd = new SubjectDao();
+	TeacherDao td = new TeacherDao();	
+		
 	int currentPage = 1;
 	if(request.getParameter("currentPage")!=null){
 		currentPage = Integer.parseInt(request.getParameter("currentPage"));
 	}
 	System.out.println(currentPage+"<-currentpage");
+		
+	//리스트가져오기
 	int rowPerPage = 10;
 	int beginRow =  (currentPage-1)*rowPerPage; 
 
-	int totalRow = sd.selectSubjectCnt();
+	ArrayList<HashMap<String, Object>> teacherList = td.selectTeacherListByPage(beginRow,rowPerPage);	
+	
+	//전체행수 구하기
+	int totalRow = td.teacherSubjectCnt();
 	int lastPage = totalRow / rowPerPage;  
 	
 	if(totalRow%rowPerPage != 0){
@@ -26,7 +32,7 @@
 	if(maxPage > lastPage){//마지막 페이지보다 maxPage가 클경우 라스트페이지와 같게 설정 (다음 버튼 생성 조건에 필요)
 			maxPage = lastPage;
 	}
-%>   
+%>    
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,31 +42,28 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<table>
-	      <h1>subjectList</h1> 
+	
+	      <h1>teacherList</h1> 
 					<div style="text-align:left;">
-						<a  type="button" class="btn btn-dark" href="<%=request.getContextPath()%>/subject/addSubject.jsp" role="button">과목추가하기</a>&nbsp;&nbsp;
+						<a  type="button" class="btn btn-dark" href="<%=request.getContextPath()%>/teacher/addTeacher.jsp" role="button">teacher추가하기</a>&nbsp;&nbsp;
 					</div>
 					<table class="table table-hover">
 						<tr class="table-info">
-							<th>과목명</th>
-							<th>진행시간</th>
-							<th>생성일</th>
-							<th>업데이트일</th>
-							<th>수정</th>
-							<th>삭제</th>
-							
+							<th>teacherNo</th>
+							<th>teacherId</th>
+							<th>teacherName</th>
+							<th>subjectNo</th>
+							<th>subjectName</th>				
 						</tr>
 						<%
-							for(Subject s : sd.selectSubjectListByPage(beginRow, rowPerPage)) {
+							for(HashMap<String, Object> t : teacherList) {
 						%>
-								<tr>
-									<td><a class="btn btn-outline-dark" href="<%=request.getContextPath()%>/subject/subjectOne.jsp?subjectNo=<%=s.getSubjectNo()%>" role="button"><%=s.getSubjectName()%></a></td>
-									<td><%=s.getSubjectTime()%></td>
-									<td><%=s.getCreatedate()%></td>
-									<td><%=s.getUpdatedate()%></td>
-									<th><a class="btn btn-outline-dark" href="<%=request.getContextPath()%>/subject/modifySubject.jsp?subjectNo=<%=s.getSubjectNo()%>" role="button">수정</a></th>
-		      						<th><a class="btn btn-outline-dark" href="<%=request.getContextPath()%>/subject/removeSubjectAction.jsp?subjectNo=<%=s.getSubjectNo()%>" role="button">삭제</a></th>
+								 <tr class="table-active">
+									<td><a class="btn btn-outline-dark" href="<%=request.getContextPath()%>/teacher/teacherOne.jsp?teacherNo=<%=t.get("teacherNo")%>&teacherName=<%=t.get("teacherName")%>"><%=t.get("teacherNo")%></a></td>
+									<td><%=(String)t.get("teacherId")%></td>
+									<td><%=(String)t.get("teacherName")%></td>
+									<td><%=t.get("subjectNo")%></td>
+									<td><%=(String)t.get("subjectName")%></td>
 								<tr>	
 						<%
 							}
@@ -71,7 +74,7 @@
 					<%
 						if(currentPage>1){
 					%>
-							<a class="btn btn-outline-dark"  href="<%=request.getContextPath()%>/subject/subjectList.jsp?currentPage=<%=currentPage-1%>">이전</a>
+							<a class="btn btn-outline-dark"  href="<%=request.getContextPath()%>/teacher/teacherList.jsp?currentPage=<%=currentPage-1%>">이전</a>
 					<%
 						}
 					%>
@@ -79,12 +82,12 @@
 					<% 	
 						if(currentPage <lastPage) {
 					%>
-							<a class="btn btn-outline-dark"  href="<%=request.getContextPath()%>/subject/subjectList?currentPage=<%=currentPage+1%>">다음</a>
+							<a class="btn btn-outline-dark"  href="<%=request.getContextPath()%>/teacher/teacherList.jsp?currentPage=<%=currentPage+1%>">다음</a>
 					<%
 						}
 					%>
 					</div>
 	
-	</table>
+	
 </body>
 </html>
